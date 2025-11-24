@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "ZIPReader.h"
-#include "ZIPErrorCode.h"
+#include "ZIPError.h"
 
 namespace fs = std::filesystem;
 
@@ -32,9 +32,9 @@ int main(int argc, char** argv)
 	fs::path output_dir = fs::absolute(zip_file_path).parent_path();
 
 	ZIPReader reader(zip_file, output_dir.string());
-	ZIPErrorCode ec = reader.UnZip();
+	ZIPError ec = reader.UnZip();
 
-	if (ec != ZIPErrorCode::Success)
+	if (ec != ZIPError::Success)
 	{
 		std::cerr << GetZIPErrorMsg(ec) << std::endl;
 		return 1;

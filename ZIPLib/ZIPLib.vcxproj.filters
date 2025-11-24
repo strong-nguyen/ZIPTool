@@ -18,7 +18,7 @@
     <ClInclude Include="include\ZIPDefine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ZIPErrorCode.h">
+    <ClInclude Include="include\ZIPError.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ZIPReader.h">

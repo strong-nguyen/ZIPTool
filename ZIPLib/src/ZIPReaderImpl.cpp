@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ZIPReaderImpl.h"
-#include "../include/ZIPErrorCode.h"
+#include "../include/ZIPError.h"
 #include "../ZIPStructure.h"
 
 #include <filesystem>
@@ -20,51 +20,51 @@ ZIPReaderImpl::ZIPReaderImpl(const std::string& zip_path, const std::string& out
 
 }
 
-ZIPErrorCode ZIPReaderImpl::UnZip()
+ZIPError ZIPReaderImpl::UnZip()
 {
-	if (ZIPErrorCode ret = ValidateParams(); ret != ZIPErrorCode::Success)
+	if (ZIPError ret = ValidateParams(); ret != ZIPError::Success)
 	{
 		return ret;
 	}
 
 	ReadZipFile();
 
-	return ZIPErrorCode::Success;
+	return ZIPError::Success;
 }
 
-ZIPErrorCode ZIPReaderImpl::ValidateParams() const
+ZIPError ZIPReaderImpl::ValidateParams() const
 {
 	std::error_code ec;
 	if (!fs::is_regular_file(m_zip_path, ec))
 	{
-		return ZIPErrorCode::ZipFileNotExisted;
+		return ZIPError::ZipFileNotExisted;
 	}
 
 	if (!fs::is_directory(m_output_path, ec))
 	{
-		return ZIPErrorCode::OutputDirNotExisted;
+		return ZIPError::OutputDirNotExisted;
 	}
 
-	return ZIPErrorCode::Success;
+	return ZIPError::Success;
 }
 
-ZIPErrorCode ZIPReaderImpl::ReadZipFile()
+ZIPError ZIPReaderImpl::ReadZipFile()
 {
 	m_zip_file.open(m_zip_path, std::ios::binary);
 	if (!m_zip_file)
 	{
-		return ZIPErrorCode::ZipFileOpenFailed;
+		return ZIPError::ZipFileOpenFailed;
 	}
 
 	// To parse a zip file, we should seek to end of file and parse EOCD
 	EOCD eocd;
-	if (ZIPErrorCode ec = ParseEOCD(eocd); ec != ZIPErrorCode::Success)
+	if (ZIPError ec = ParseEOCD(eocd); ec != ZIPError::Success)
 	{
 		return ec;
 	}
 
 	auto [ec, file_entries] = ParseCentralDirectory(eocd.offsetOfCD, eocd.totalEntries);
-	if (ec != ZIPErrorCode::Success)
+	if (ec != ZIPError::Success)
 	{
 		return ec;
 	}
@@ -74,10 +74,10 @@ ZIPErrorCode ZIPReaderImpl::ReadZipFile()
 		ParseLocalFileHeader(file_entry);
 	}
 
-	return ZIPErrorCode::Success;
+	return ZIPError::Success;
 }
 
-ZIPErrorCode ZIPReaderImpl::ParseEOCD(EOCD& eocd)
+ZIPError ZIPReaderImpl::ParseEOCD(EOCD& eocd)
 {
 	/*
 The EOCD record has a fixed signature and fields:
@@ -114,14 +114,14 @@ Comment	variable	Optional comment
 		{
 			// Found signature byte
 			std::memcpy(&eocd, buffer + i, sizeof(EOCD));
-			return ZIPErrorCode::Success;
+			return ZIPError::Success;
 		}
 	}
 
-	return ZIPErrorCode::EOCDNotFound;
+	return ZIPError::EOCDNotFound;
 }
 
-std::tuple<ZIPErrorCode, std::vector<FileEntryInfo>> ZIPReaderImpl::ParseCentralDirectory(uint32_t offset, uint16_t total_entries)
+std::tuple<ZIPError, std::vector<FileEntryInfo>> ZIPReaderImpl::ParseCentralDirectory(uint32_t offset, uint16_t total_entries)
 {
 	/*
 	* Each file in the ZIP has a Central Directory File Header. This is what you parse after locating the Central Directory offset from the EOCD.
@@ -159,7 +159,7 @@ File comment	variable	Optional comment
 
 		if (header.signature != 0x02014b50)
 		{
-			return { ZIPErrorCode::InvalidCentralDirectorySignature, {} };
+			return { ZIPError::InvalidCentralDirectorySignature, {} };
 		}
 
 		// Read file name
@@ -172,10 +172,10 @@ File comment	variable	Optional comment
 		m_zip_file.seekg(header.extraFieldLength + header.fileCommentLength, std::ios::cur);
 	}
 
-	return { ZIPErrorCode::Success, file_entries };
+	return { ZIPError::Success, file_entries };
 }
 
-ZIPErrorCode ZIPReaderImpl::ParseLocalFileHeader(const FileEntryInfo& file_entry)
+ZIPError ZIPReaderImpl::ParseLocalFileHeader(const FileEntryInfo& file_entry)
 {
 	/*
 	* The Local File Header structure:
@@ -202,7 +202,7 @@ After this header, the compressed file data begins.
 	m_zip_file.read(reinterpret_cast<char*>(&header), sizeof(header));
 
 	if (header.signature != 0x04034b50) {
-		return ZIPErrorCode::InvalidLocalFileHeaderSignature;
+		return ZIPError::InvalidLocalFileHeaderSignature;
 	}
 
 	m_zip_file.seekg(header.fileNameLength + header.extraFieldLength, std::ios::cur);
@@ -232,14 +232,14 @@ After this header, the compressed file data begins.
 		inflateEnd(&strm);
 
 		if (ret != Z_STREAM_END) {
-			return ZIPErrorCode::DecompressionFailed;
+			return ZIPError::DecompressionFailed;
 		}
 	}
 	else
 	{
 		// Not suppored
 		std::cerr << "Not supported compress mode: " << header.compression << std::endl;
-		return ZIPErrorCode::NotSupportedCompressionMode;
+		return ZIPError::NotSupportedCompressionMode;
 	}
 
 	// Write to output file
@@ -250,7 +250,7 @@ After this header, the compressed file data begins.
 		fs::create_directories(file_entry.fileName, ec);
 		if (ec.value() != 0)
 		{
-			return ZIPErrorCode::CreateDirectoryFailed;
+			return ZIPError::CreateDirectoryFailed;
 		}
 	}
 	else
@@ -260,5 +260,5 @@ After this header, the compressed file data begins.
 		out.write(reinterpret_cast<char*>(uncompressed.data()), uncompressed.size());
 	}
 
-	return ZIPErrorCode::Success;
+	return ZIPError::Success;
 }

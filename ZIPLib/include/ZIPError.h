@@ -2,7 +2,7 @@
 
 #include "ZIPDefine.h"
 
-enum ZIPErrorCode
+enum ZIPError
 {
 	Success = 0,
 	ZipFileNotExisted,
@@ -16,4 +16,4 @@ enum ZIPErrorCode
 	DecompressionFailed
 };
 
-ZIPLIB_API std::string GetZIPErrorMsg(ZIPErrorCode ec);
+ZIPLIB_API std::string GetZIPErrorMsg(ZIPError ec);

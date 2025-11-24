@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ZIPDefine.h"
-#include "ZIPErrorCode.h"
+#include "ZIPError.h"
 
 #include <memory>
 
@@ -15,7 +15,7 @@ public:
 
 	~ZIPReader();
 
-	ZIPErrorCode UnZip();
+	ZIPError UnZip();
 
 private:
 	std::unique_ptr<ZIPReaderImpl> pimpl;  // Hide the detail implementation for user
