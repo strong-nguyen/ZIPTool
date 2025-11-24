@@ -52,14 +52,13 @@ int main(int argc, char** argv)
 
 	if (ec != ZIPErrorCode::Success)
 	{
-		std::cerr << std::format("Unzip failed, error: {}.", GetZIPErrorMsg(ec)) << std::endl;
+		std::cerr << std::format("Unzip failed, error: {}", GetZIPErrorMsg(ec)) << std::endl;
 		return 1;
 	}
 	else
 	{
-		std::cout << std::format("Unzip successsfully to {}.", output_dir.string()) << std::endl;
+		std::cout << std::format("Unzip successsfully to {}", output_dir.string()) << std::endl;
 	}
 
-	std::cout << "Unzip success." << std::endl;
 	return 0;
 }

@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="ZIPUtils.h" />
     <ClInclude Include="ZIPDeCompressor.h" />
     <ClInclude Include="ZIPStructure.h" />
     <ClInclude Include="framework.h" />
@@ -30,6 +31,7 @@
     <ClCompile Include="src\ZIPErrorCode.cpp" />
     <ClCompile Include="src\ZIPReader.cpp" />
     <ClCompile Include="src\ZIPReaderImpl.cpp" />
+    <ClCompile Include="ZIPUtils.cpp" />
     <ClCompile Include="ZIPDeCompressor.cpp" />
     <ClCompile Include="ZIPStructure.cpp" />
   </ItemGroup>

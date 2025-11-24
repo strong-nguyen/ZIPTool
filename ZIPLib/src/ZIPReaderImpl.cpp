@@ -3,6 +3,7 @@
 #include "../include/ZIPErrorCode.h"
 #include "../ZIPStructure.h"
 #include "../ZIPDeCompressor.h"
+#include "../ZIPUtils.h"
 
 #include <filesystem>
 #include <memory>
@@ -242,6 +243,7 @@ After this header, the compressed file data begins.
 	}
 
 	// Write to output file
+	zip_utils::ZipDateTime dt = zip_utils::DecodeDosDateTime(header.modDate, header.modTime);
 	if (file_entry.fileName.ends_with("/"))
 	{
 		// Directory
@@ -256,6 +258,8 @@ After this header, the compressed file data begins.
 		// File
 		m_file_mgr.CreateFile(file_entry.fileName, uncompressed);
 	}
+
+	m_file_mgr.SetModifiedTime(file_entry.fileName, dt);
 
 	return ZIPErrorCode::Success;
 }
