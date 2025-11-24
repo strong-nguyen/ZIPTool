@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ZIPDefine.h"
+#include <string>
 
 enum ZIPErrorCode
 {

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "../include/ZIPErrorCode.h"
 #include <unordered_map>
+#include <format>
 
 static const std::unordered_map<ZIPErrorCode, std::string> EcTable = {
 	{ZIPErrorCode::Success, "Success"},
