@@ -7,6 +7,8 @@
 #include <memory>
 #include <iostream>
 
+#include <zlib.h>
+
 
 namespace fs = std::filesystem;
 
@@ -219,7 +221,19 @@ After this header, the compressed file data begins.
 	else if (header.compression == 8)
 	{
 		// Deflate compression
+		z_stream strm{};
+		strm.next_in = compressed.data();
+		strm.avail_in = header.compressedSize;
+		strm.next_out = uncompressed.data();
+		strm.avail_out = header.uncompressedSize;
 
+		inflateInit2(&strm, -MAX_WBITS); // raw deflate
+		int ret = inflate(&strm, Z_FINISH);
+		inflateEnd(&strm);
+
+		if (ret != Z_STREAM_END) {
+			return ZIPErrorCode::DecompressionFailed;
+		}
 	}
 	else
 	{
