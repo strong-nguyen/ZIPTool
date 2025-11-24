@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "ZIPReaderImpl.h"
 #include "../include/ZIPErrorCode.h"
-#include "../ZIPStructure.h"
-#include "../ZIPDeCompressor.h"
-#include "../ZIPUtils.h"
+#include "ZIPStructure.h"
+#include "ZIPDeCompressor.h"
+#include "ZIPUtils.h"
 
 #include <filesystem>
 #include <memory>

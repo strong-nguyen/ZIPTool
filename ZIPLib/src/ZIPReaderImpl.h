@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../include/ZIPErrorCode.h"
-#include "../ZIPStructure.h"
-#include "../FileManager.h"
+#include "ZIPStructure.h"
+#include "FileManager.h"
 
 #include <fstream>
 #include <tuple>
