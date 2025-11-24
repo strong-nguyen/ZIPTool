@@ -228,6 +228,12 @@ After this header, the compressed file data begins.
 	else if (header.compression == 8)
 	{
 		// Deflate compression
+
+		if (compressed.empty())  // There is case compressed size is zero
+		{
+			std::cout << "[Warn] Compressed size is 0" << std::endl;
+		}
+
 		ZIPDeCompressor compressor(CompressorMode::Deflate);
 		ZIPErrorCode ec = compressor.Decompress(compressed, uncompressed);
 		if (ec != ZIPErrorCode::Success)
