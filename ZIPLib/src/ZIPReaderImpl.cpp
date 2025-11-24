@@ -14,7 +14,8 @@ namespace fs = std::filesystem;
 ZIPReaderImpl::ZIPReaderImpl(const std::string& zip_path, const std::string& output_path)
 	:
 	m_zip_path(zip_path),
-	m_output_path(output_path)
+	m_output_path(output_path),
+	m_file_mgr(output_path)
 {
 
 }
@@ -244,18 +245,16 @@ After this header, the compressed file data begins.
 	if (file_entry.fileName.ends_with("/"))
 	{
 		// Directory
-		std::error_code ec;
-		fs::create_directories(file_entry.fileName, ec);
-		if (ec.value() != 0)
+		auto ec = m_file_mgr.CreateDir(file_entry.fileName);
+		if (ec != ZIPErrorCode::Success)
 		{
-			return ZIPErrorCode::CreateDirectoryFailed;
+			return ec;
 		}
 	}
 	else
 	{
 		// File
-		std::ofstream out(file_entry.fileName, std::ios::binary);
-		out.write(reinterpret_cast<char*>(uncompressed.data()), uncompressed.size());
+		m_file_mgr.CreateFile(file_entry.fileName, uncompressed);
 	}
 
 	return ZIPErrorCode::Success;

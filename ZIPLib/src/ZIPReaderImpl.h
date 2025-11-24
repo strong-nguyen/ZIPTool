@@ -2,6 +2,7 @@
 
 #include "../include/ZIPErrorCode.h"
 #include "../ZIPStructure.h"
+#include "../FileManager.h"
 
 #include <fstream>
 #include <tuple>
@@ -29,8 +30,10 @@ private:
 
 	std::string m_zip_path;
 
+	std::ifstream m_zip_file;
+
 	std::string m_output_path;
 
-	std::ifstream m_zip_file;
+	FileManager m_file_mgr;
 };
 
