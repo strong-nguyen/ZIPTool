@@ -11,7 +11,8 @@ enum ZIPErrorCode
 	EOCDNotFound,
 	InvalidCentralDirectorySignature,
 	InvalidLocalFileHeaderSignature,
-	NotSupportedCompressionMode
+	NotSupportedCompressionMode,
+	CreateDirectoryFailed
 };
 
 ZIPLIB_API std::string GetZIPErrorMsg(ZIPErrorCode ec);

@@ -112,8 +112,6 @@ Comment	variable	Optional comment
 		{
 			// Found signature byte
 			std::memcpy(&eocd, buffer + i, sizeof(EOCD));
-
-			std::cout << "size of EOCD: " << sizeof(EOCD) << std::endl;
 			return ZIPErrorCode::Success;
 		}
 	}
@@ -156,8 +154,6 @@ File comment	variable	Optional comment
 	{
 		CentralDirectoryHeader header;
 		m_zip_file.read(reinterpret_cast<char*>(&header), sizeof(CentralDirectoryHeader));
-
-		std::cout << "size of header: " << sizeof(header) << std::endl;
 
 		if (header.signature != 0x02014b50)
 		{
@@ -233,7 +229,22 @@ After this header, the compressed file data begins.
 	}
 
 	// Write to output file
-	std::ofstream out(file_entry.fileName, std::ios::binary);
-	out.write(reinterpret_cast<char*>(uncompressed.data()), uncompressed.size());
+	if (file_entry.fileName.ends_with("/"))
+	{
+		// Directory
+		std::error_code ec;
+		fs::create_directories(file_entry.fileName, ec);
+		if (ec.value() != 0)
+		{
+			return ZIPErrorCode::CreateDirectoryFailed;
+		}
+	}
+	else
+	{
+		// File
+		std::ofstream out(file_entry.fileName, std::ios::binary);
+		out.write(reinterpret_cast<char*>(uncompressed.data()), uncompressed.size());
+	}
 
+	return ZIPErrorCode::Success;
 }

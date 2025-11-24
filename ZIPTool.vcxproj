@@ -61,7 +61,8 @@
       <AdditionalDependencies>ZIPLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /Y /D $(SolutionDir)ZIPLib\x64\Debug\ZIPLib.dll $(OutputPath)</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
