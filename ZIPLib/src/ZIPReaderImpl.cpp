@@ -2,12 +2,11 @@
 #include "ZIPReaderImpl.h"
 #include "../include/ZIPErrorCode.h"
 #include "../ZIPStructure.h"
+#include "../ZIPDeCompressor.h"
 
 #include <filesystem>
 #include <memory>
 #include <iostream>
-
-#include <zlib.h>
 
 
 namespace fs = std::filesystem;
@@ -34,6 +33,7 @@ ZIPErrorCode ZIPReaderImpl::UnZip()
 
 ZIPErrorCode ZIPReaderImpl::ValidateParams() const
 {
+	// TODO: Store the ec as last error on the thread
 	std::error_code ec;
 	if (!fs::is_regular_file(m_zip_path, ec))
 	{
@@ -55,6 +55,11 @@ ZIPErrorCode ZIPReaderImpl::ReadZipFile()
 	{
 		return ZIPErrorCode::ZipFileOpenFailed;
 	}
+
+	/*
+	Zip file structure :
+	|Local File Header|Compressed data|Local File Header|Compressed data|...|CentralDirectoryHeader|End Of Central Directory Header|
+	*/
 
 	// To parse a zip file, we should seek to end of file and parse EOCD
 	EOCD eocd;
@@ -121,7 +126,7 @@ Comment	variable	Optional comment
 	return ZIPErrorCode::EOCDNotFound;
 }
 
-std::tuple<ZIPErrorCode, std::vector<FileEntryInfo>> ZIPReaderImpl::ParseCentralDirectory(uint32_t offset, uint16_t total_entries)
+std::tuple<ZIPErrorCode, std::vector<FileEntryInfo>> ZIPReaderImpl::ParseCentralDirectory(uint32_t offset_cd, uint16_t total_entries)
 {
 	/*
 	* Each file in the ZIP has a Central Directory File Header. This is what you parse after locating the Central Directory offset from the EOCD.
@@ -151,7 +156,7 @@ File comment	variable	Optional comment
 
 	std::vector<FileEntryInfo> file_entries;
 
-	m_zip_file.seekg(offset, std::ios::beg);
+	m_zip_file.seekg(offset_cd, std::ios::beg);
 	for (int i = 0; i < total_entries; ++i)
 	{
 		CentralDirectoryHeader header;
@@ -221,18 +226,11 @@ After this header, the compressed file data begins.
 	else if (header.compression == 8)
 	{
 		// Deflate compression
-		z_stream strm{};
-		strm.next_in = compressed.data();
-		strm.avail_in = header.compressedSize;
-		strm.next_out = uncompressed.data();
-		strm.avail_out = header.uncompressedSize;
-
-		inflateInit2(&strm, -MAX_WBITS); // raw deflate
-		int ret = inflate(&strm, Z_FINISH);
-		inflateEnd(&strm);
-
-		if (ret != Z_STREAM_END) {
-			return ZIPErrorCode::DecompressionFailed;
+		ZIPDeCompressor compressor(CompressorMode::Deflate);
+		ZIPErrorCode ec = compressor.Decompress(compressed, uncompressed);
+		if (ec != ZIPErrorCode::Success)
+		{
+			return ec;
 		}
 	}
 	else

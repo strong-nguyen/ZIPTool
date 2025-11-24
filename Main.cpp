@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 	fs::path output_dir(output_path);
 	if (output_dir.empty())  // If user not specify output path, ZIPTool will extract to the same dir as zip file
 	{
-		fs::path output_dir = fs::absolute(zip_file_path).parent_path();
+		output_dir = fs::absolute(zip_file_path).parent_path();
 	}
 	else
 	{

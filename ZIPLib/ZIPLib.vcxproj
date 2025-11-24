@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ZIPDeCompressor.h" />
     <ClInclude Include="ZIPStructure.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="include\ZIPDefine.h" />
@@ -27,6 +28,7 @@
     <ClCompile Include="src\ZIPErrorCode.cpp" />
     <ClCompile Include="src\ZIPReader.cpp" />
     <ClCompile Include="src\ZIPReaderImpl.cpp" />
+    <ClCompile Include="ZIPDeCompressor.cpp" />
     <ClCompile Include="ZIPStructure.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

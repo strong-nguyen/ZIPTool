@@ -23,7 +23,7 @@ private:
 
 	ZIPErrorCode ParseEOCD(EOCD& eocd);
 
-	std::tuple<ZIPErrorCode, std::vector<FileEntryInfo>> ParseCentralDirectory(uint32_t offset, uint16_t total_entries);
+	std::tuple<ZIPErrorCode, std::vector<FileEntryInfo>> ParseCentralDirectory(uint32_t offset_cd, uint16_t total_entries);
 
 	ZIPErrorCode ParseLocalFileHeader(const FileEntryInfo& file_entry);
 
