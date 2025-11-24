@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../include/ZIPError.h"
+#include "../include/ZIPErrorCode.h"
 #include "../ZIPStructure.h"
 
 #include <fstream>
@@ -14,18 +14,18 @@ class ZIPReaderImpl
 public:
 	ZIPReaderImpl(const std::string& zip_path, const std::string& output_path);
 
-	ZIPError UnZip();
+	ZIPErrorCode UnZip();
 
 private:
-	ZIPError ValidateParams() const;
+	ZIPErrorCode ValidateParams() const;
 
-	ZIPError ReadZipFile();
+	ZIPErrorCode ReadZipFile();
 
-	ZIPError ParseEOCD(EOCD& eocd);
+	ZIPErrorCode ParseEOCD(EOCD& eocd);
 
-	std::tuple<ZIPError, std::vector<FileEntryInfo>> ParseCentralDirectory(uint32_t offset, uint16_t total_entries);
+	std::tuple<ZIPErrorCode, std::vector<FileEntryInfo>> ParseCentralDirectory(uint32_t offset, uint16_t total_entries);
 
-	ZIPError ParseLocalFileHeader(const FileEntryInfo& file_entry);
+	ZIPErrorCode ParseLocalFileHeader(const FileEntryInfo& file_entry);
 
 	std::string m_zip_path;
 

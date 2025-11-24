@@ -14,7 +14,7 @@ ZIPReader::~ZIPReader()
 
 }
 
-ZIPError ZIPReader::UnZip()
+ZIPErrorCode ZIPReader::UnZip()
 {
 	return pimpl->UnZip();
 }
