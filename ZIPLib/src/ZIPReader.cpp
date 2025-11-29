@@ -18,3 +18,8 @@ ZIPErrorCode ZIPReader::UnZip()
 {
 	return pimpl->UnZip();
 }
+
+int ZIPReader::GetZIPLastError()
+{
+	return pimpl->GetZIPLastError();
+}

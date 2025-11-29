@@ -17,6 +17,8 @@ public:
 
 	ZIPErrorCode UnZip();
 
+	int GetZIPLastError();
+
 private:
 	ZIPErrorCode ValidateParams() const;
 
@@ -27,6 +29,8 @@ private:
 	std::tuple<ZIPErrorCode, std::vector<FileEntryInfo>> ParseCentralDirectory(uint32_t offset_cd, uint16_t total_entries);
 
 	ZIPErrorCode ParseLocalFileHeader(const FileEntryInfo& file_entry);
+
+	void SetZIPLastError(int ec) const;
 
 	std::string m_zip_path;
 

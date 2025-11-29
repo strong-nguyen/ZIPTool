@@ -17,6 +17,8 @@ public:
 
 	ZIPErrorCode UnZip();
 
+	int GetZIPLastError();
+
 private:
 	std::unique_ptr<ZIPReaderImpl> pimpl;  // Hide the detail implementation for user
 };

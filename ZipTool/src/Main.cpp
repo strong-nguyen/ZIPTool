@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 
 	if (ec != ZIPErrorCode::Success)
 	{
-		std::cerr << std::format("Unzip failed, error: {}", GetZIPErrorMsg(ec)) << std::endl;
+		std::cerr << std::format("Unzip failed, error: {}, last error: {}", GetZIPErrorMsg(ec), reader.GetZIPLastError()) << std::endl;
 		return 1;
 	}
 	else

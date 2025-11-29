@@ -8,9 +8,12 @@
 #include <filesystem>
 #include <memory>
 #include <iostream>
+#include <thread>
 
 
 namespace fs = std::filesystem;
+
+thread_local int ZIPLastError = 0;  // It will store last error on each thread, usually, it contains OS API error code
 
 ZIPReaderImpl::ZIPReaderImpl(const std::string& zip_path, const std::string& output_path)
 	:
@@ -33,12 +36,17 @@ ZIPErrorCode ZIPReaderImpl::UnZip()
 	return ZIPErrorCode::Success;
 }
 
+int ZIPReaderImpl::GetZIPLastError()
+{
+	return ZIPLastError;
+}
+
 ZIPErrorCode ZIPReaderImpl::ValidateParams() const
 {
-	// TODO: Store the ec as last error on the thread
 	std::error_code ec;
 	if (!fs::is_regular_file(m_zip_path, ec))
 	{
+		SetZIPLastError(ec.value());
 		return ZIPErrorCode::ZipFileNotExisted;
 	}
 
@@ -46,11 +54,13 @@ ZIPErrorCode ZIPReaderImpl::ValidateParams() const
 	{
 		if (!fs::create_directory(m_output_path, ec))
 		{
+			SetZIPLastError(ec.value());
 			return ZIPErrorCode::CreateDirectoryFailed;
 		}
 	}
 	else if (!fs::is_directory(m_output_path, ec))
 	{
+		SetZIPLastError(ec.value());
 		return ZIPErrorCode::OutputDirInvalid;
 	}
 
@@ -275,4 +285,9 @@ After this header, the compressed file data begins.
 	m_file_mgr.SetModifiedTime(file_entry.fileName, dt);
 
 	return ZIPErrorCode::Success;
+}
+
+void ZIPReaderImpl::SetZIPLastError(int ec) const
+{
+	ZIPLastError = ec;
 }
