@@ -42,9 +42,16 @@ ZIPErrorCode ZIPReaderImpl::ValidateParams() const
 		return ZIPErrorCode::ZipFileNotExisted;
 	}
 
-	if (!fs::is_directory(m_output_path, ec))
+	if (!fs::exists(m_output_path))
 	{
-		return ZIPErrorCode::OutputDirNotExisted;
+		if (!fs::create_directory(m_output_path, ec))
+		{
+			return ZIPErrorCode::CreateDirectoryFailed;
+		}
+	}
+	else if (!fs::is_directory(m_output_path, ec))
+	{
+		return ZIPErrorCode::OutputDirInvalid;
 	}
 
 	return ZIPErrorCode::Success;

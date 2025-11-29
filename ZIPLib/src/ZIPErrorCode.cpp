@@ -6,7 +6,7 @@
 static const std::unordered_map<ZIPErrorCode, std::string> EcTable = {
 	{ZIPErrorCode::Success, "Success"},
 	{ZIPErrorCode::ZipFileNotExisted, "Input file is not found"},
-	{ZIPErrorCode::OutputDirNotExisted, "Output dir is not existed"},
+	{ZIPErrorCode::OutputDirInvalid, "Output dir is invalid"},
 	{ZIPErrorCode::ZipFileOpenFailed, "Failed to open zip file"},
 	{ZIPErrorCode::EOCDNotFound, "Cannot find EOCD"},
 	{ZIPErrorCode::InvalidCentralDirectorySignature, "Signature of CD not matched with ZIP spec"},

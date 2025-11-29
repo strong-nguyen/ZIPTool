@@ -7,7 +7,7 @@ enum ZIPErrorCode
 {
 	Success = 0,
 	ZipFileNotExisted,
-	OutputDirNotExisted,
+	OutputDirInvalid,
 	ZipFileOpenFailed,
 	EOCDNotFound,
 	InvalidCentralDirectorySignature,
