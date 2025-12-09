@@ -12,6 +12,8 @@
 
 ## Zip file structure:
 
+![Zip File Structure](zip-file-structure.png)
+
 - https://en.wikipedia.org/wiki/ZIP_%28file_format%29
 - https://docs.fileformat.com/compression/zip/
 
